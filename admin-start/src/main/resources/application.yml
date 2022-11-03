@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,3 +11,11 @@ spring:
     user:
       name: admin
       password: admin
+
+jwt:
+
+
+root:
+  username: root
+  password: $2a$10$xhY656/UBc68gVtQzapb7O/1PZhYWpfQ24aMZ4GW/prQ0jFZg91AG
+

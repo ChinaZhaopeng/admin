@@ -10,4 +10,9 @@ public class LoginServiceImpl implements LoginService {
     public String login(User user) {
         return null;
     }
+
+    @Override
+    public int register(User user) {
+        return 0;
+    }
 }
