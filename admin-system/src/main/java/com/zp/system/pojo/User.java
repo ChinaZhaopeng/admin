@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,13 +14,14 @@ import lombok.experimental.Accessors;
 public class User {
 
     private long id;
+    private String avatar;
     private String name;
     private String username;
     private String password;
     private String phone;
     private String email;
-    private java.sql.Timestamp createTime;
-    private java.sql.Timestamp createUser;
+    private Timestamp createTime;
+    private String createUser;
     private long deptId;
-
+    private long isEnable;
 }

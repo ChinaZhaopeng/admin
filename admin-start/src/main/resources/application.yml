@@ -4,18 +4,11 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/admin?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/admin?useSSL=false&characterEncoding=utf-8&useUnicode=true&serverTimezone=Asia/Shanghai
     username: root
     password: root
   security:
     user:
-      name: admin
-      password: admin
-
-jwt:
-
-
-root:
-  username: root
-  password: $2a$10$xhY656/UBc68gVtQzapb7O/1PZhYWpfQ24aMZ4GW/prQ0jFZg91AG
-
+      name: root
+      password: root
+      roles: root

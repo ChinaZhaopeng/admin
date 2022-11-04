@@ -6,8 +6,9 @@
     <modules>
         <module>admin-common</module>
         <module>admin-start</module>
-        <module>admin-system</module>
         <module>admin-security</module>
+        <module>admin-system</module>
+        <module>admin-report</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -157,6 +158,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.0.0-SNAPSHOT</version>
                 <configuration>
                     <excludes>
                         <exclude>
