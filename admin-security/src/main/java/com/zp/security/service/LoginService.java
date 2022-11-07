@@ -1,9 +1,9 @@
 package com.zp.security.service;
 
-import com.zp.system.pojo.User;
+import com.zp.system.pojo.SysUser;
 
 public interface LoginService {
-    String login(User user);
+    String login(SysUser sysUser);
 
-    int register(User user);
+    int register(SysUser sysUser);
 }

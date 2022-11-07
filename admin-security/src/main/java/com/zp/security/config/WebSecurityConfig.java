@@ -1,6 +1,10 @@
 package com.zp.security.config;
 
-import com.zp.system.mapper.UserMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zp.system.mapper.SysRoleMapper;
+import com.zp.system.mapper.SysUserMapper;
+import com.zp.system.pojo.SysRole;
+import com.zp.system.pojo.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,14 +14,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 
 @Configuration
@@ -32,8 +34,9 @@ public class WebSecurityConfig {
     @Value("${spring.security.user.roles}")
     private String roles;
     @Autowired
-    private UserMapper userMapper;
-
+    private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
@@ -52,7 +55,14 @@ public class WebSecurityConfig {
             if(this.username.equals(username)){
                 return User.builder().username(this.username).password(this.password).roles(this.roles).build();
             }
-            return null;
+            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>(new SysUser().setUsername(username));
+            SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+            //查询角色
+            List<SysRole> sysRoleList = sysRoleMapper.selectRolesByUser(sysUser);
+            String[] sysRoleKeys = sysRoleList.stream().map(SysRole::getKey).toArray(String[]::new);
+            //查询权限
+
+            return User.builder().username(username).password(sysUser.getPassword()).disabled(!sysUser.getIsEnable()).roles(sysRoleKeys).authorities("").build();
 
         };
     }
