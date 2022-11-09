@@ -13,6 +13,9 @@ class AdminStartApplicationTests {
     @Test
     void contextLoads() {
     }
+    /**
+     * 加密
+     * */
     @Test
     void encodePassword() {
         System.out.println(passwordEncoder.encode("zhaopeng"));

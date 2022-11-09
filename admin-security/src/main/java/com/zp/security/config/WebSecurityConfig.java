@@ -1,12 +1,12 @@
 package com.zp.security.config;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zp.system.mapper.SysMenuMapper;
 import com.zp.system.mapper.SysRoleMapper;
-import com.zp.system.mapper.SysUserMapper;
+import com.zp.system.pojo.SysMenu;
 import com.zp.system.pojo.SysRole;
 import com.zp.system.pojo.SysUser;
+import com.zp.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,22 +26,18 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
-    //超级管理员用户信息
-    @Value("${spring.security.user.name}")
-    private String username;
-    @Value("${spring.security.user.password}")
-    private String password;
-    @Value("${spring.security.user.roles}")
-    private String roles;
+
     @Autowired
-    private SysUserMapper sysUserMapper;
+    private SysUserService sysUserService;
     @Autowired
     private SysRoleMapper sysRoleMapper;
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeHttpRequests().requestMatchers("/login").permitAll()
+                .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 
@@ -49,21 +45,18 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
-        return (username)->{
-            if(this.username.equals(username)){
-                return User.builder().username(this.username).password(this.password).roles(this.roles).build();
-            }
-            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>(new SysUser().setUsername(username));
-            SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+        return username -> {
+            SysUser sysUser = sysUserService.selectUserByUsername(username);
             //查询角色
-            List<SysRole> sysRoleList = sysRoleMapper.selectRolesByUser(sysUser);
-            String[] sysRoleKeys = sysRoleList.stream().map(SysRole::getKey).toArray(String[]::new);
+            List<SysRole> sysRoleList = sysRoleMapper.selectRoleListByUser(sysUser);
+            String[] sysRoles = sysRoleList.stream().map(SysRole::getName).toArray(String[]::new);
             //查询权限
-
-            return User.builder().username(username).password(sysUser.getPassword()).disabled(!sysUser.getIsEnable()).roles(sysRoleKeys).authorities("").build();
-
+            List<SysMenu> sysMenuList = sysMenuMapper.selectPermsListByRoleIDList(sysRoleList);
+            String[] menuPerms = sysMenuList.stream().map(SysMenu::getPerms).toArray(String[]::new);
+            return User.builder().username(username).password(sysUser.getPassword()).roles(sysRoles).authorities(menuPerms).build();
         };
     }
 }

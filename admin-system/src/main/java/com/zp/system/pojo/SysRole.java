@@ -13,7 +13,9 @@ public class SysRole {
 
   private long id;
   private String name;
-  private String key;
+  private String title;
   private long sort;
+  private long root;
+  private long admin;
 
 }

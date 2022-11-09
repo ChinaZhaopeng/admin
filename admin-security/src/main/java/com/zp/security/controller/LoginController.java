@@ -29,6 +29,6 @@ public class LoginController {
     @PostMapping("/login")
     public Result<String> login(@Validated @RequestBody SysUser sysUser){
         String token = loginService.login(sysUser);
-        return Result.success();
+        return Result.success(token);
     }
 }

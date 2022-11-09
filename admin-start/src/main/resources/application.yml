@@ -7,8 +7,15 @@ spring:
     url: jdbc:mysql://localhost:3306/admin?useSSL=false&characterEncoding=utf-8&useUnicode=true&serverTimezone=Asia/Shanghai
     username: root
     password: root
-  security:
-    user:
-      name: root
-      password: root
-      roles: root
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.zp.*.pojo
+  mapper-locations: classpath*:/mapper/*.xml
+
+jwt:
+  header: Authorization
+  secret: admin
+  tokenPrefix: 'Bearer '
+  expire: 3600

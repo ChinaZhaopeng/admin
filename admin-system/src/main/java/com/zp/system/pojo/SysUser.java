@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Accessors(chain = true)
 public class SysUser {
 
-  private long id;
+  private int id;
   private String avatar;
   private String name;
   private String username;
@@ -22,7 +22,6 @@ public class SysUser {
   private String email;
   private Timestamp createTime;
   private String createUser;
-  private long deptId;
-  private Boolean isEnable;
+  private int deptId;
 
 }
